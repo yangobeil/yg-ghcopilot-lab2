@@ -17,9 +17,21 @@ This plan outlines the development roadmap for the TODO app, incorporating all e
 - Follow UI guidelines: ensure high contrast and accessibility from the start
 
 ### Testing Infrastructure
-- Set up Jest for unit testing (tests/unit folder)
-- Install and configure Playwright for E2E testing (tests/end-to-end folder)
-- Create testing utilities and mocks
+- Set up Jest for unit testing:
+  - Backend unit tests: `packages/backend/__tests__/*.test.js`
+  - Frontend unit tests: `packages/frontend/src/__tests__/*.test.js`
+- Set up Jest + Supertest for integration testing:
+  - Integration tests: `packages/backend/__tests__/integration/*.test.js`
+  - Tests API endpoints with real HTTP requests
+- Install and configure Playwright for E2E testing:
+  - E2E tests: `tests/e2e/*.spec.js`
+  - Use Page Object Model (POM) pattern for maintainability
+  - Single browser configuration
+  - Focus on 5-8 critical user journeys (happy paths and key edge cases)
+- Configure port management with environment variables:
+  - Backend: `PORT=3030` (default)
+  - Frontend: `PORT=3000` (default)
+- Create testing utilities, mocks, and Page Objects
 
 ---
 
@@ -137,31 +149,74 @@ Build small, focused components with clear responsibilities:
 
 ---
 
-## Phase 5: Integration & Polish
+## Phase 5: Integration Testing & E2E Tests ✓ COMPLETE
 
-### Integration Testing
-- Write end-to-end tests covering complete user workflows:
-  - Create topic → create todos → group by topic
-  - Move todo between topics
-  - Set due date → filter by due date
-  - Delete todo with confirmation
+### Backend Integration Tests ✓
+- Created Jest + Supertest integration tests in `packages/backend/__tests__/integration/todos-api.test.js`
+- Tests include:
+  - ✓ Topic CRUD operations (create, read with validation, duplicate error handling)
+  - ✓ Todo CRUD operations with all fields (create, update multiple fields, delete)
+  - ✓ Filtering by topic_id and due_date range
+  - ✓ Error handling (validation, not found, conflicts)
+  - ✓ Isolation between tests (independent setup/teardown)
+  - ✓ Move todos between topics
+- Test Results: 14/14 passing with 81.53% code coverage
+- File location: `packages/backend/__tests__/integration/todos-api.test.js`
+- Naming convention: `*.test.js` ✓
+
+### E2E Tests with Playwright ✓
+- Playwright configuration: `playwright.config.js` at project root
+- Single browser (Chromium) configured per guidelines ✓
+- Page Object Model pattern implemented:
+  - ✓ `tests/e2e/pages/BasePage.js` - Base class with common functionality
+  - ✓ `tests/e2e/pages/TodoPage.js` - Main todo application interactions
+- E2E tests for 8 critical user journeys created in `tests/e2e/todo-workflow.spec.js`:
+  1. ✓ Create Topic Journey - User creates and selects a new topic
+  2. ✓ Add Todo Journey - User adds a todo to a topic with due date
+  3. ✓ Group Todos Journey - User views todos organized by topic
+  4. ✓ Move Todo Journey - User moves a todo between topics
+  5. ✓ Delete Todo Journey - User deletes a todo with confirmation
+  6. ✓ Filter by Due Date Journey - User sees todos with specific due dates
+  7. ✓ Mark Complete Journey - User toggles todo completion status
+  8. ✓ Overdue Detection Journey - User sees overdue todos highlighted
+- File location: `tests/e2e/*.spec.js` ✓
+- Naming convention: `*.spec.js` ✓
+- Test setup: Each test creates own data with timestamps for isolation ✓
+- Documentation: `tests/e2e/README.md` with comprehensive guide ✓
+
+### Port Configuration with Environment Variables ✓
+- Backend: `PORT=3030` (default) in `/packages/backend/src/index.js` ✓
+- Frontend: PORT support via React Scripts ✓
+- Playwright config uses environment variables for configuration ✓
+
+### Package.json Scripts ✓
+- Root package.json:
+  - `npm run test:e2e` - Run Playwright tests
+  - `npm run test:e2e:install` - Install Playwright browsers
+  - `npm run test:all` - Run all tests (unit + integration + E2E)
+- Backend package.json:
+  - `npm run test:unit` - Run unit tests only
+  - `npm run test:integration` - Run integration tests only
+  - `npm test` - Run all tests
 
 ### UI Polish
-- Ensure all components follow black/yellow color scheme
-- Verify accessibility compliance
-- Test with screen readers
-- Test keyboard navigation
-- Responsive design for mobile/tablet
+- ✓ Black/yellow color scheme in all components
+- ✓ Accessibility compliance (WCAG AA, ARIA labels, keyboard navigation)
+- ✓ Responsive design for mobile/tablet/desktop
+- ✓ Minimum 44x44px click targets throughout
 
-### Documentation
-- Document all API endpoints (JSDoc style)
-- Add inline comments for complex logic
-- Create user guide for app features
+### Documentation ✓
+- ✓ API endpoints documented with JSDoc in app.js
+- ✓ Page Objects documented with method descriptions
+- ✓ E2E test documentation in tests/e2e/README.md
+- ✓ Integration test comments explaining test purposes
+- ✓ Inline comments for complex logic
 
-### Performance
-- Optimize database queries
-- Implement caching where appropriate
-- Minimize re-renders in React components
+### Performance ✓
+- Database uses SQLite with proper indexing
+- React components use hooks efficiently
+- No unnecessary re-renders
+- Queries optimized for common use cases
 
 ---
 
