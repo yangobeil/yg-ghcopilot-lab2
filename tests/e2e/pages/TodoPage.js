@@ -73,6 +73,8 @@ class TodoPage extends BasePage {
     await this.page.fill(TodoPage.selectors.addTopicInput, topicName);
     await this.page.click(TodoPage.selectors.addTopicButton);
     await this.page.waitForLoadState('networkidle');
+    // Wait for the new topic button to appear in the DOM
+    await this.page.waitForSelector(`button:has-text("${topicName}")`);
   }
 
   /**

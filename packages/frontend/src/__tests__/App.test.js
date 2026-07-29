@@ -111,8 +111,8 @@ describe('App Component', () => {
     });
 
     await waitFor(() => {
-      expect(screen.getByText('Work')).toBeInTheDocument();
-      expect(screen.getByText('Personal')).toBeInTheDocument();
+      expect(screen.getByRole('button', { name: /Select topic: Work/ })).toBeInTheDocument();
+      expect(screen.getByRole('button', { name: /Select topic: Personal/ })).toBeInTheDocument();
     });
   });
 
@@ -134,7 +134,7 @@ describe('App Component', () => {
     });
 
     await waitFor(() => {
-      expect(screen.getByText('Work')).toBeInTheDocument();
+      expect(screen.getByRole('button', { name: /Select topic: Work/ })).toBeInTheDocument();
     });
 
     const input = screen.getByPlaceholderText('Topic name...');
@@ -152,7 +152,7 @@ describe('App Component', () => {
     });
 
     await waitFor(() => {
-      expect(screen.getByText('Work')).toBeInTheDocument();
+      expect(screen.getByRole('button', { name: /Select topic: Work/ })).toBeInTheDocument();
     });
 
     const titleInput = screen.getByPlaceholderText('Enter your todo...');
@@ -166,6 +166,9 @@ describe('App Component', () => {
     server.use(
       rest.get('/api/topics', (req, res, ctx) => {
         return res(ctx.status(500));
+      }),
+      rest.get('/api/todos', (req, res, ctx) => {
+        return res(ctx.status(500));
       })
     );
 
@@ -174,7 +177,9 @@ describe('App Component', () => {
     });
 
     await waitFor(() => {
-      expect(screen.getByText(/Error fetching topics/)).toBeInTheDocument();
+      expect(screen.getByRole('alert')).toBeInTheDocument();
+      const alertText = screen.getByRole('alert').textContent;
+      expect(alertText).toMatch(/Error fetching/);
     });
   });
 
@@ -202,12 +207,12 @@ describe('App Component', () => {
     });
 
     await waitFor(() => {
-      expect(screen.getByText('Work')).toBeInTheDocument();
-      expect(screen.getByText('Personal')).toBeInTheDocument();
+      expect(screen.getByRole('button', { name: /Select topic: Work/ })).toBeInTheDocument();
+      expect(screen.getByRole('button', { name: /Select topic: Personal/ })).toBeInTheDocument();
     });
 
     // Click on Personal topic
-    const personalButton = screen.getAllByRole('button', { name: /Select topic/ })[1];
+    const personalButton = screen.getByRole('button', { name: /Select topic: Personal/ });
     await user.click(personalButton);
 
     await waitFor(() => {

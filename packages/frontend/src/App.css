@@ -413,6 +413,8 @@ button:active {
     transition-duration: 0.01ms !important;
   }
 }
+
+button {
   border: none;
   border-radius: 4px;
   cursor: pointer;
